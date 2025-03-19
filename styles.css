@@ -1,0 +1,351 @@
+/* styles.css */
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f8f8f8; /* Light theme background */
+    color: #333; /* Light theme text color */
+    transition: background-color 0.3s, color 0.3s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.dark-theme {
+    background-color: #121212; /* Dark theme background */
+    color: #e0e0e0; /* Dark theme text color */
+}
+
+.app-container {
+    width: 100%;
+    max-width: 800px; /* Wider container for a more spacious feel */
+    padding: 30px;
+    background-color: #fff; /* Container background in light theme */
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    margin: 20px;
+    transition: background-color 0.3s;
+}
+
+.dark-theme .app-container {
+    background-color: #1e1e1e; /* Container background in dark theme */
+    box-shadow: 0 8px 20px rgba(255,255,255,0.05);
+}
+
+.app-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #eee; /* Light border */
+}
+
+.dark-theme .app-header {
+    border-bottom-color: #333; /* Dark border */
+}
+
+.app-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #3f51b5; /* Primary color - Indigo */
+    margin: 0;
+}
+
+.dark-theme .app-title {
+    color: #9fa8da; /* Lighter primary color in dark theme */
+}
+
+.theme-button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    background-color: #eee; /* Light background for button */
+    color: #333;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.dark-theme .theme-button {
+    background-color: #333; /* Dark background for button */
+    color: #eee;
+}
+
+.theme-button:hover {
+    background-color: #ddd; /* Slightly darker hover in light theme */
+}
+
+.dark-theme .theme-button:hover {
+    background-color: #444; /* Slightly lighter hover in dark theme */
+}
+
+.theme-button .icon {
+    margin-right: 8px;
+}
+
+.app-main {
+    display: flex;
+    flex-direction: column;
+    gap: 25px; /* Spacing between sections */
+}
+
+.input-section, .options-section, .action-section, .output-section {
+    margin-bottom: 20px; /* Spacing below sections */
+}
+
+.input-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #555; /* Label color */
+}
+
+.dark-theme .input-label {
+    color: #ccc; /* Label color in dark theme */
+}
+
+.input-field, .select-field, .textarea-field, .file-input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ccc; /* Input border */
+    border-radius: 8px;
+    font-size: 1rem;
+    background-color: #fefefe; /* Input background */
+    color: #333;
+    transition: border-color 0.3s;
+    box-sizing: border-box; /* Important for padding and border to be inside width */
+}
+
+.dark-theme .input-field, .dark-theme .select-field, .dark-theme .textarea-field, .dark-theme .file-input {
+    background-color: #252525; /* Input background in dark theme */
+    color: #eee;
+    border-color: #555; /* Input border in dark theme */
+}
+
+
+.input-field:focus, .select-field:focus, .textarea-field:focus {
+    outline: none;
+    border-color: #3f51b5; /* Focus border color - Indigo */
+    box-shadow: 0 0 0 2px rgba(63, 81, 181, 0.2); /* Focus shadow */
+}
+
+.dark-theme .input-field:focus, .dark-theme .select-field:focus, .dark-theme .dark-theme .textarea-field:focus {
+    border-color: #7986cb; /* Lighter focus border color in dark theme */
+    box-shadow: 0 0 0 2px rgba(121, 134, 203, 0.2); /* Focus shadow in dark theme */
+}
+
+.api-key-group, .select-group, .custom-prompt-group {
+    margin-bottom: 15px;
+}
+
+.api-key-input-wrapper {
+    display: flex;
+    align-items: center;
+}
+
+.api-key-input-wrapper input {
+    margin-right: 10px;
+}
+
+.api-key-button, .mode-button, .process-button, .remove-api-key {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 8px;
+    background-color: #3f51b5; /* Primary button color - Indigo */
+    color: #fff;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s;
+}
+
+.api-key-button:hover, .mode-button:hover, .process-button:hover, .remove-api-key:hover {
+    background-color: #303f9f; /* Darker hover color for buttons */
+}
+
+.dark-theme .api-key-button, .dark-theme .mode-button, .dark-theme .process-button, .dark-theme .remove-api-key {
+    background-color: #7986cb; /* Lighter primary button color in dark theme */
+}
+
+.dark-theme .api-key-button:hover, .dark-theme .mode-button:hover, .dark-theme .process-button:hover, .dark-theme .remove-api-key:hover {
+    background-color: #5c6bc0; /* Slightly darker hover in dark theme */
+}
+
+.api-key-button.remove-api-key {
+    background-color: #d32f2f; /* Red for remove button */
+}
+
+.api-key-button.remove-api-key:hover {
+    background-color: #b71c1c; /* Darker red hover */
+}
+
+.dark-theme .api-key-button.remove-api-key {
+    background-color: #e57373; /* Lighter red in dark theme */
+}
+
+.dark-theme .api-key-button.remove-api-key:hover {
+    background-color: #ef5350; /* Slightly darker red hover in dark theme */
+}
+
+
+.input-mode-switch {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.input-mode-label {
+    margin-right: 15px;
+    font-weight: 500;
+    color: #555;
+}
+
+.dark-theme .input-mode-label {
+    color: #ccc;
+}
+
+.mode-button {
+    background-color: #eee; /* Light mode button background */
+    color: #555; /* Light mode button text */
+    margin-right: 8px;
+}
+
+.mode-button.active {
+    background-color: #3f51b5; /* Active mode button color - Indigo */
+    color: #fff;
+}
+
+.dark-theme .mode-button {
+    background-color: #333; /* Dark mode button background */
+    color: #ccc; /* Dark mode button text */
+}
+
+.dark-theme .mode-button.active {
+    background-color: #7986cb; /* Active mode button color in dark theme */
+    color: #fff;
+}
+
+
+.process-button {
+    padding: 15px 25px;
+    font-size: 1.1rem;
+    display: block;
+    margin: 20px auto; /* Center the button */
+}
+
+.section-title {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    color: #555;
+}
+
+.dark-theme .section-title {
+    color: #ccc;
+}
+
+.output-section {
+    display: flex; /* Enable flexbox for equal height columns */
+    gap: 20px; /* Gap between log and output areas */
+    align-items: stretch; /* Stretch items to equal height */
+}
+
+.log-area, .output-area {
+    flex: 1; /* Equal width for log and output areas */
+    display: flex; /* Enable flex layout for header and content */
+    flex-direction: column; /* Stack header and content vertically */
+}
+
+.output-header {
+    display: flex;
+    justify-content: flex-end; /* Align buttons to the right */
+    padding-bottom: 10px;
+}
+
+.action-button {
+    padding: 8px 12px;
+    border: 1px solid #3f51b5; /* Outline border color - Indigo */
+    border-radius: 8px;
+    background-color: transparent; /* Transparent background for outline style */
+    color: #3f51b5; /* Text color - Indigo */
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+    margin-left: 8px; /* Space between buttons */
+}
+
+.dark-theme .action-button {
+    border-color: #7986cb; /* Lighter outline border in dark theme */
+    color: #7986cb; /* Lighter text color in dark theme */
+}
+
+
+.action-button:hover {
+    background-color: #3f51b5; /* Solid background on hover */
+    color: #fff; /* White text on hover */
+}
+
+.dark-theme .action-button:hover {
+    background-color: #7986cb; /* Lighter solid background on hover in dark theme */
+    color: #fff;
+}
+
+.action-button i {
+    margin-right: 5px; /* Spacing between icon and text */
+}
+
+
+.output-box, .log-box {
+    background-color: #f0f0f0; /* Default output box background - can be kept or changed */
+    border: 1px solid #ddd; /* Default output box border - can be kept or changed */
+    border-radius: 8px;
+    padding: 15px;
+    font-size: 0.95rem;
+    min-height: 150px; /* Minimum height for output boxes */
+    overflow-y: auto; /* Enable vertical scrolling */
+    max-height: 400px; /* Optional max height to control box size */
+    white-space: pre-wrap; /* Preserve formatting and wrap text */
+    word-wrap: break-word; /* **ADD THIS LINE: Enable word wrap** */
+}
+
+.dark-theme .output-box, .dark-theme .log-box {
+    background-color: #2a2a2a; /* Default output box background in dark theme - can be kept or changed */
+    border-color: #444; /* Default output box border in dark theme - can be kept or changed */
+    color: #ddd;
+}
+
+/* Terminal style for Log Box specifically */
+.log-box {
+    background-color: #222; /* Dark terminal background */
+    border: 1px solid #555; /* Darker border for log box */
+    border-radius: 0; /* Remove rounded corners for terminal look */
+    font-family: 'Menlo', 'Consolas', monospace; /* Monospace font */
+    color: #eee; /* Light text color */
+    font-size: 0.9rem; /* Slightly smaller font size for log */
+    padding: 10px; /* Adjust padding for terminal style */
+    overflow-y: auto; /* Enable vertical scrolling */
+    max-height: 300px; /* Optional max height for log box */
+    white-space: pre-wrap; /* Preserve formatting and wrap text - already here, keep it */
+    word-wrap: break-word; /* **ADD THIS LINE: Enable word wrap for log box too, if needed** */
+}
+
+.dark-theme .log-box {
+    background-color: #222; /* Ensure dark background in dark theme */
+    border-color: #555; /* Ensure darker border in dark theme */
+    color: #eee; /* Ensure light text color in dark theme */
+}
+
+
+.app-footer {
+    text-align: center;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #eee; /* Light footer border */
+    color: #777;
+    font-size: 0.9rem;
+}
+
+.dark-theme .app-footer {
+    border-top-color: #333; /* Dark footer border */
+    color: #999;
+}
