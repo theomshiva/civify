@@ -1,4 +1,4 @@
-/* styles.css */
+/* styles.css - Mobile-Friendly Update */
 body {
     font-family: 'Roboto', sans-serif;
     margin: 0;
@@ -18,13 +18,13 @@ body {
 }
 
 .app-container {
-    width: 100%;
-    max-width: 800px; /* Wider container for a more spacious feel */
-    padding: 30px;
+    width: 95%; /* Make container width responsive */
+    max-width: 800px; /* Still maintain max width for larger screens */
+    padding: 20px; /* Reduce padding for smaller screens */
     background-color: #fff; /* Container background in light theme */
     border-radius: 12px;
     box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-    margin: 20px;
+    margin: 10px; /* Reduce margin for smaller screens */
     transition: background-color 0.3s;
 }
 
@@ -37,8 +37,8 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 25px;
-    padding-bottom: 15px;
+    margin-bottom: 20px; /* Reduce margin for smaller screens */
+    padding-bottom: 10px; /* Reduce padding for smaller screens */
     border-bottom: 1px solid #eee; /* Light border */
 }
 
@@ -47,7 +47,7 @@ body {
 }
 
 .app-title {
-    font-size: 2rem;
+    font-size: 1.75rem; /* Slightly smaller title on mobile */
     font-weight: 700;
     color: #3f51b5; /* Primary color - Indigo */
     margin: 0;
@@ -58,13 +58,13 @@ body {
 }
 
 .theme-button {
-    padding: 10px 20px;
+    padding: 8px 16px; /* Slightly smaller button padding on mobile */
     border: none;
     border-radius: 8px;
     background-color: #eee; /* Light background for button */
     color: #333;
     cursor: pointer;
-    font-size: 1rem;
+    font-size: 0.9rem; /* Slightly smaller button text on mobile */
     transition: background-color 0.3s, color 0.3s;
 }
 
@@ -82,24 +82,25 @@ body {
 }
 
 .theme-button .icon {
-    margin-right: 8px;
+    margin-right: 6px; /* Slightly smaller icon margin on mobile */
 }
 
 .app-main {
     display: flex;
     flex-direction: column;
-    gap: 25px; /* Spacing between sections */
+    gap: 20px; /* Reduce gap between sections on mobile */
 }
 
 .input-section, .options-section, .action-section, .output-section {
-    margin-bottom: 20px; /* Spacing below sections */
+    margin-bottom: 15px; /* Reduce margin below sections on mobile */
 }
 
 .input-label {
     display: block;
-    margin-bottom: 8px;
+    margin-bottom: 6px; /* Reduce label margin on mobile */
     font-weight: 500;
     color: #555; /* Label color */
+    font-size: 0.95rem; /* Slightly smaller label font on mobile */
 }
 
 .dark-theme .input-label {
@@ -108,10 +109,10 @@ body {
 
 .input-field, .select-field, .textarea-field, .file-input {
     width: 100%;
-    padding: 12px 15px;
+    padding: 10px 12px; /* Slightly smaller input padding on mobile */
     border: 1px solid #ccc; /* Input border */
     border-radius: 8px;
-    font-size: 1rem;
+    font-size: 0.95rem; /* Slightly smaller input font on mobile */
     background-color: #fefefe; /* Input background */
     color: #333;
     transition: border-color 0.3s;
@@ -137,7 +138,7 @@ body {
 }
 
 .api-key-group, .select-group, .custom-prompt-group {
-    margin-bottom: 15px;
+    margin-bottom: 12px; /* Reduce group margin on mobile */
 }
 
 .api-key-input-wrapper {
@@ -146,17 +147,17 @@ body {
 }
 
 .api-key-input-wrapper input {
-    margin-right: 10px;
+    margin-right: 8px; /* Reduce input margin in wrapper on mobile */
 }
 
 .api-key-button, .mode-button, .process-button, .remove-api-key {
-    padding: 10px 15px;
+    padding: 8px 12px; /* Slightly smaller button padding on mobile */
     border: none;
     border-radius: 8px;
     background-color: #3f51b5; /* Primary button color - Indigo */
     color: #fff;
     cursor: pointer;
-    font-size: 1rem;
+    font-size: 0.9rem; /* Slightly smaller button font on mobile */
     transition: background-color 0.3s;
 }
 
@@ -192,13 +193,14 @@ body {
 .input-mode-switch {
     display: flex;
     align-items: center;
-    margin-bottom: 15px;
+    margin-bottom: 12px; /* Reduce margin on mobile */
 }
 
 .input-mode-label {
-    margin-right: 15px;
+    margin-right: 10px; /* Reduce margin on mobile */
     font-weight: 500;
     color: #555;
+    font-size: 0.95rem; /* Slightly smaller font on mobile */
 }
 
 .dark-theme .input-mode-label {
@@ -208,7 +210,9 @@ body {
 .mode-button {
     background-color: #eee; /* Light mode button background */
     color: #555; /* Light mode button text */
-    margin-right: 8px;
+    margin-right: 6px; /* Reduce margin on mobile */
+    padding: 8px 12px; /* Match other button padding */
+    font-size: 0.9rem; /* Match other button font size */
 }
 
 .mode-button.active {
@@ -228,15 +232,15 @@ body {
 
 
 .process-button {
-    padding: 15px 25px;
-    font-size: 1.1rem;
+    padding: 12px 20px; /* Slightly smaller process button padding on mobile */
+    font-size: 1rem; /* Slightly smaller process button font on mobile */
     display: block;
-    margin: 20px auto; /* Center the button */
+    margin: 15px auto; /* Reduce margin on mobile */
 }
 
 .section-title {
-    font-size: 1.2rem;
-    margin-bottom: 10px;
+    font-size: 1.1rem; /* Slightly smaller section title on mobile */
+    margin-bottom: 8px; /* Reduce margin on mobile */
     color: #555;
 }
 
@@ -246,7 +250,8 @@ body {
 
 .output-section {
     display: flex; /* Enable flexbox for equal height columns */
-    gap: 20px; /* Gap between log and output areas */
+    flex-direction: column; /* Stack log and output vertically on mobile */
+    gap: 15px; /* Reduce gap on mobile */
     align-items: stretch; /* Stretch items to equal height */
 }
 
@@ -259,19 +264,19 @@ body {
 .output-header {
     display: flex;
     justify-content: flex-end; /* Align buttons to the right */
-    padding-bottom: 10px;
+    padding-bottom: 8px; /* Reduce padding on mobile */
 }
 
 .action-button {
-    padding: 8px 12px;
+    padding: 6px 10px; /* Smaller action button padding on mobile */
     border: 1px solid #3f51b5; /* Outline border color - Indigo */
     border-radius: 8px;
     background-color: transparent; /* Transparent background for outline style */
     color: #3f51b5; /* Text color - Indigo */
     cursor: pointer;
-    font-size: 0.9rem;
+    font-size: 0.85rem; /* Smaller action button font on mobile */
     transition: background-color 0.3s, color 0.3s, border-color 0.3s;
-    margin-left: 8px; /* Space between buttons */
+    margin-left: 6px; /* Reduce margin on mobile */
 }
 
 .dark-theme .action-button {
@@ -291,21 +296,21 @@ body {
 }
 
 .action-button i {
-    margin-right: 5px; /* Spacing between icon and text */
+    margin-right: 4px; /* Reduce icon margin on mobile */
 }
 
 
 .output-box, .log-box {
     background-color: #f0f0f0; /* Default output box background - can be kept or changed */
     border: 1px solid #ddd; /* Default output box border - can be kept or changed */
-    border-radius: 8px;
-    padding: 15px;
-    font-size: 0.95rem;
-    min-height: 150px; /* Minimum height for output boxes */
-    overflow-y: auto; /* Enable vertical scrolling */
-    max-height: 400px; /* Optional max height to control box size */
+    border-radius: 8px; /* Keep rounded corners for output, remove for log if terminal style is strictly desired */
+    padding: 12px; /* Reduce padding on mobile */
+    font-size: 0.9rem; /* Slightly smaller font size on mobile */
+    min-height: 100px; /* Adjust min height for mobile */
+    overflow-y: auto; /* Enable vertical scrolling */ /* ADDED: Ensure scrollable */
+    max-height: 300px; /* ADDED: Optional max height to control box size - adjust for mobile */
     white-space: pre-wrap; /* Preserve formatting and wrap text */
-    word-wrap: break-word; /* **ADD THIS LINE: Enable word wrap** */
+    word-wrap: break-word; /* Enable word wrap */
 }
 
 .dark-theme .output-box, .dark-theme .log-box {
@@ -321,12 +326,12 @@ body {
     border-radius: 0; /* Remove rounded corners for terminal look */
     font-family: 'Menlo', 'Consolas', monospace; /* Monospace font */
     color: #eee; /* Light text color */
-    font-size: 0.9rem; /* Slightly smaller font size for log */
-    padding: 10px; /* Adjust padding for terminal style */
-    overflow-y: auto; /* Enable vertical scrolling */
-    max-height: 300px; /* Optional max height for log box */
-    white-space: pre-wrap; /* Preserve formatting and wrap text - already here, keep it */
-    word-wrap: break-word; /* **ADD THIS LINE: Enable word wrap for log box too, if needed** */
+    font-size: 0.85rem; /* Even smaller font size for log on mobile */
+    padding: 8px; /* Adjust padding for terminal style on mobile */
+    overflow-y: auto; /* Enable vertical scrolling */ /* ADDED: Ensure scrollable */
+    max-height: 200px; /* ADDED: Optional max height for log box - adjust for mobile */
+    white-space: pre-wrap; /* Preserve formatting and wrap text */
+    word-wrap: break-word; /* Enable word wrap */
 }
 
 .dark-theme .log-box {
@@ -338,14 +343,48 @@ body {
 
 .app-footer {
     text-align: center;
-    margin-top: 30px;
-    padding-top: 20px;
+    margin-top: 20px; /* Reduce margin on mobile */
+    padding-top: 15px; /* Reduce padding on mobile */
     border-top: 1px solid #eee; /* Light footer border */
     color: #777;
-    font-size: 0.9rem;
+    font-size: 0.85rem; /* Smaller footer font on mobile */
 }
 
 .dark-theme .app-footer {
     border-top-color: #333; /* Dark footer border */
     color: #999;
+}
+
+/* Media Query for smaller screens (e.g., phones) */
+@media (max-width: 600px) {
+    .app-header {
+        flex-direction: column; /* Stack header elements vertically on small screens */
+        text-align: center; /* Center align text in header */
+    }
+    .app-title {
+        margin-bottom: 10px; /* Add some margin below title when stacked */
+        font-size: 1.5rem; /* Even smaller title on very small screens */
+    }
+    .input-mode-switch {
+        flex-direction: column; /* Stack input mode switch on small screens */
+        align-items: flex-start; /* Align buttons to the start */
+    }
+    .input-mode-label {
+        margin-bottom: 5px; /* Add margin below label when stacked */
+        margin-right: 0; /* Remove right margin */
+    }
+    .mode-button {
+        margin-right: 0; /* Remove right margin */
+        margin-bottom: 5px; /* Add bottom margin for stacked buttons */
+        display: block; /* Make buttons block level to stack nicely */
+        width: 100%; /* Full width buttons on small screens */
+        text-align: center; /* Center text in buttons */
+    }
+    .output-section {
+        flex-direction: column; /* Ensure output section is always column on small screens */
+    }
+    .action-button {
+        margin-left: 0; /* Remove left margin */
+        margin-bottom: 5px; /* Add bottom margin for stacked buttons */
+    }
 }
