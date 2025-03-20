@@ -19,7 +19,7 @@ const estimatedTimeValueElement = document.getElementById('estimatedTimeValue');
 
         // Pre-ready prompts
         const PRESET_PROMPTS = {
-            "generate-subtitles": `Generate subtitles for the provided video in the style used in .srt files, for the time range [START_TIME] to [END_TIME]. Ensure the subtitles are in the same language as the video's audio. Break the subtitles into small, readable sections, with each section lasting no longer than 3-4 seconds on screen. Use the following .srt format for each subtitle block:\n[Subtitle index number]\n[Start time in HH:MM:SS,MS format] --> [End time in HH:MM:SS,MS format]\n[Text of the subtitle]\nEnsure the subtitles are synchronized with the audio, easy to read, and accurately reflect the spoken content. Use proper punctuation and capitalization for clarity. If the video contains multiple speakers, indicate the speaker when necessary (e.g., [Speaker 1]: [Dialogue]).\n\nEach subtitle block should be a maximum of two lines, with each line limited to 80 characters\n\n**Return *only* the subtitle content in .srt format, without any introductory or concluding remarks.**`,
+            "generate-subtitles": `Generate subtitles for the provided video in the .srt file style, covering the time range [START_TIME] to [END_TIME].\nMatch the subtitle language to the video’s audio language.\nTranscribe all audible spoken content within this range, ensuring no parts are skipped.\nDivide the subtitles into concise, readable segments, each appearing on screen for 2-4 seconds.\n\nFormat each subtitle block as follows:\n[Subtitle index number]\n[Start time in HH:MM:SS,MMM format] --> [End time in HH:MM:SS,MMM format]\n[Text of the subtitle]\n\nSynchronize subtitles with the audio, ensuring accuracy and readability.\nReflect the spoken content precisely, using proper punctuation and capitalization.\nFor multiple speakers, label them clearly (e.g., [Speaker 1]: [Dialogue]).\nLimit each subtitle block to two lines, with a maximum of 80 characters per line, including spaces and punctuation.\nSeparate each subtitle block with exactly one blank line.\n**Return *only* the subtitle content in .srt format, without any introductory or concluding remarks.**`,
             "summarize-video": "Provide a concise summary of this video.",
             "describe-scenes": "Describe the key scenes in this video with timestamps.",
             "extract-key-events": "Extract and list the key events in this video with timestamps.",
@@ -196,12 +196,22 @@ const estimatedTimeValueElement = document.getElementById('estimatedTimeValue');
             const details = localStorage.getItem(`video_${fileName}`);
             if (details) {
                 const parsed = JSON.parse(details);
+                const savedTimestamp = parsed.timestamp;
+                const now = Date.now();
+                const fortyEightHoursMs = 48 * 60 * 60 * 1000; // 48 hours in milliseconds
+
+                if (now - savedTimestamp > fortyEightHoursMs) {
+                    log(`Saved video details for ${fileName} are older than 48 hours. Removing and re-uploading.`);
+                    localStorage.removeItem(`video_${fileName}`); // Remove expired details
+                    return null; // Indicate details are expired and should not be used
+                }
+
                 fileUri = parsed.fileUri;
                 fileId = parsed.fileId;
                 fileState = "ACTIVE";
-                return parsed;
+                return parsed; // Return valid, non-expired details
             }
-            return null;
+            return null; // No details found in local storage
         }
 
         // Step 1: Initiate resumable upload and get upload URL (for files)
@@ -302,30 +312,53 @@ const estimatedTimeValueElement = document.getElementById('estimatedTimeValue');
             return minutes * 60 + seconds;
         }
 
-        // Step 4: Generate content from the video
-        async function generateContent(apiKey, model, prompt, mimeType, videoUri, startTime = "00:00:00,000", endTime = null) {
-            const requestBody = {
-                contents: [{
-                    parts: [
-                        { text: prompt.replace("[START_TIME]", startTime).replace("[END_TIME]", endTime || "end of video") },
-                        { file_data: { mime_type: mimeType || "video/mp4", file_uri: videoUri } }
-                    ]
-                }]
-            };
+        // Step 4: Generate content from the video - with retry logic
+        async function generateContent(apiKey, model, prompt, mimeType, videoUri, startTime = "00:00:00,000", endTime = null, maxRetries = 3) {
+            let retries = 0;
+            let lastError = null;
 
-            log(`Generating content from ${startTime} to ${endTime || "end"}...`);
-            const response = await fetch(`${BASE_URL}/v1beta/models/${model}:generateContent?key=${apiKey}`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(requestBody)
-            });
+            while (retries <= maxRetries) {
+                const requestBody = {
+                    contents: [{
+                        parts: [
+                            { text: prompt.replace("[START_TIME]", startTime).replace("[END_TIME]", endTime || "end of video") },
+                            { file_data: { mime_type: mimeType || "video/mp4", file_uri: videoUri } }
+                        ]
+                    }]
+                };
 
-            if (!response.ok) throw new Error("Content generation failed");
-            const data = await response.json();
-            return data.candidates[0].content.parts[0].text;
+                log(`Generating content from ${startTime} to ${endTime || "end"}... (Attempt ${retries + 1})`);
+                try {
+                    const response = await fetch(`${BASE_URL}/v1beta/models/${model}:generateContent?key=${apiKey}`, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(requestBody)
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        return data.candidates[0].content.parts[0].text; // Successful response
+                    } else {
+                        lastError = new Error(`Content generation failed with status ${response.status}`);
+                        log(`Attempt ${retries + 1} failed: ${lastError.message}`);
+                    }
+                } catch (error) {
+                    lastError = error;
+                    log(`Attempt ${retries + 1} failed with an exception: ${error.message}`);
+                }
+                retries++;
+                if (retries <= maxRetries) {
+                    log(`Waiting 60 seconds before retrying...`);
+                    await new Promise(resolve => setTimeout(resolve, 60000)); // Wait 60 seconds before retry
+                }
+            }
+
+            log(`All ${maxRetries + 1} attempts to generate content failed.`);
+            throw lastError || new Error("Content generation failed after multiple retries."); // Throw the last error or a generic error
         }
+
 
         // Get video duration - now with manual override and warning
         async function getVideoDuration(apiKey, model, mimeType, videoUri) {
@@ -361,106 +394,123 @@ const estimatedTimeValueElement = document.getElementById('estimatedTimeValue');
         }
 
 
-        // Process subtitles in parts with user-defined part duration in minutes (min 1)
-        async function processSubtitlesInParts(model, prompt, mimeType, videoUri) {
-            let partDurationMinutes = parseInt(document.getElementById('partDuration').value, 10);
+        // Process subtitles in parts with user-defined part duration in minutes (min 1) - with retry logic
+        async function processSubtitlesInParts(model, prompt, mimeType, videoUri, maxRetries = 3) {
+            let retries = 0;
+            let lastError = null;
 
-            if (isNaN(partDurationMinutes) || partDurationMinutes < 1) {
-                log("Invalid part duration. Using default 7 minutes. Minimum is 1 minute.");
-                partDurationMinutes = 7; // Default to 7 minutes if invalid, minimum 1 min
-            }
+            while (retries <= maxRetries) {
+                try {
+                    let partDurationMinutes = parseInt(document.getElementById('partDuration').value, 10);
 
-            const apiKey = getNextApiKey();
-            if (!apiKey) throw new Error("No valid API keys provided.");
+                    if (isNaN(partDurationMinutes) || partDurationMinutes < 1) {
+                        log("Invalid part duration. Using default 7 minutes. Minimum is 1 minute.");
+                        partDurationMinutes = 7; // Default to 7 minutes if invalid, minimum 1 min
+                    }
 
-            let durationSeconds = await getVideoDuration(apiKey, model, mimeType, videoUri); // Get duration first
-            if (durationSeconds === null) { // If duration is not obtained, stop processing
-                log("Video duration could not be determined. Subtitle generation aborted.");
-                return null;
-            }
+                    const apiKey = getNextApiKey();
+                    if (!apiKey) throw new Error("No valid API keys provided.");
 
-
-            const partDurationSeconds = partDurationMinutes * 60; // Convert minutes to seconds
-            let estimatedResponseTimePerPart = 60; // Default, will be updated after first part
-            let numberOfParts = Math.ceil(durationSeconds / partDurationSeconds);
-            let firstPartContent = ""; // Declare firstPartContent here, initialize to empty string
+                    let durationSeconds = await getVideoDuration(apiKey, model, mimeType, videoUri); // Get duration first
+                    if (durationSeconds === null) { // If duration is not obtained, stop processing
+                        throw new Error("Video duration could not be determined. Subtitle generation aborted.");
+                    }
 
 
-            estimatedTimeElement.style.display = 'block';
+                    const partDurationSeconds = partDurationMinutes * 60; // Convert minutes to seconds
+                    let estimatedResponseTimePerPart = 60; // Default, will be updated after first part
+                    let numberOfParts = Math.ceil(durationSeconds / partDurationSeconds);
+                    let firstPartContent = ""; // Declare firstPartContent here, initialize to empty string
 
 
-            let fullContent = "";
-            let indexOffset = 0;
-            let firstPartTime = 0; // To store the time taken for the first part
-
-            // Process the first part to estimate time
-            const startTimeFirstPart = secondsToTime(0);
-            const endTimeFirstPart = secondsToTime(Math.min(partDurationSeconds, durationSeconds));
-            log(`Processing first subtitle part to estimate time: ${startTimeFirstPart} to ${endTimeFirstPart}`);
-
-            const startFirstPart = performance.now(); // Start time for first part
-            try {
-                firstPartContent = await generateContent(apiKey, model, prompt, mimeType, videoUri, startTimeFirstPart, endTimeFirstPart); // Assign value to firstPartContent
-                firstPartTime = (performance.now() - startFirstPart) / 1000; // Time in seconds
-                estimatedResponseTimePerPart = Math.max(firstPartTime, 30); // Use first part time, but minimum 30 seconds to avoid very low estimates
-                log(`First part processing time: ${firstPartTime.toFixed(1)} seconds. Using ${estimatedResponseTimePerPart.toFixed(1)}s per part for estimate.`);
-            } catch (error) {
-                log(`Error during first part processing for time estimation: ${error.message}. Using default estimate.`);
-                // Fallback to default if first part fails to process for time estimation
-                estimatedResponseTimePerPart = 60; // Default estimate if first part fails for time estimation
-                firstPartContent = ""; // Ensure firstPartContent is empty string in case of error
-            }
+                    estimatedTimeElement.style.display = 'block';
 
 
-            let estimatedTotalSeconds = numberOfParts * estimatedResponseTimePerPart;
-            let estimatedMinutes = Math.ceil(estimatedTotalSeconds / 60);
-            estimatedTimeValueElement.textContent = `${estimatedMinutes} minutes (approx.)`;
+                    let fullContent = "";
+                    let indexOffset = 0;
+                    let firstPartTime = 0; // To store the time taken for the first part
+
+                    // Process the first part to estimate time
+                    const startTimeFirstPart = secondsToTime(0);
+                    const endTimeFirstPart = secondsToTime(Math.min(partDurationSeconds, durationSeconds));
+                    log(`Processing first subtitle part to estimate time: ${startTimeFirstPart} to ${endTimeFirstPart}`);
+
+                    const startFirstPart = performance.now(); // Start time for first part
+                    try {
+                        firstPartContent = await generateContent(apiKey, model, prompt, mimeType, videoUri, startTimeFirstPart, endTimeFirstPart); // Assign value to firstPartContent
+                        firstPartTime = (performance.now() - startFirstPart) / 1000; // Time in seconds
+                        estimatedResponseTimePerPart = Math.max(firstPartTime, 30); // Use first part time, but minimum 30 seconds to avoid very low estimates
+                        log(`First part processing time: ${firstPartTime.toFixed(1)} seconds. Using ${estimatedResponseTimePerPart.toFixed(1)}s per part for estimate.`);
+                    } catch (error) {
+                        log(`Error during first part processing for time estimation: ${error.message}. Using default estimate.`);
+                        // Fallback to default if first part fails to process for time estimation
+                        estimatedResponseTimePerPart = 60; // Default estimate if first part fails for time estimation
+                        firstPartContent = ""; // Ensure firstPartContent is empty string in case of error
+                    }
 
 
-            for (let start = 0; start < durationSeconds; start += partDurationSeconds) {
-                // ADDED LOGGING HERE:
-                log(`Loop start: start=${start}, firstPartTime=${firstPartTime}`);
-
-                const startTime = secondsToTime(start);
-                const endTime = secondsToTime(Math.min(start + partDurationSeconds, durationSeconds));
-                const partApiKey = getNextApiKey();
-                if (!partApiKey) throw new Error("No valid API keys provided.");
-
-                // Skip the first part as it was already processed for time estimation
-                if (start === 0 && firstPartTime > 0) {
-                    indexOffset = (firstPartContent.split("\n").filter(line => /^\d+$/.test(line)).pop() || 0) ; // Try to get last index from first part content, default to 0 if none found
-                    if (indexOffset) indexOffset = parseInt(indexOffset); else indexOffset = 0; // Ensure indexOffset is a number
-
-                    if (start >= durationSeconds) break; // Check if done
-                    log("Skipped processing for part: 00:00:00,000 because it was used for estimation."); // Added log for skip
-
-                    fullContent += firstPartContent + "\n\n"; // **APPEND firstPartContent HERE**
+                    let estimatedTotalSeconds = numberOfParts * estimatedResponseTimePerPart;
+                    let estimatedMinutes = Math.ceil(estimatedTotalSeconds / 60);
+                    estimatedTimeValueElement.textContent = `${estimatedMinutes} minutes (approx.)`;
 
 
-                } else { // ADDED else block to process parts when not skipped
-                    log(`Processing subtitles for part: ${startTime} to ${endTime}`);
-                    let partContent = await generateContent(partApiKey, model, prompt, mimeType, videoUri, startTime, endTime);
+                    for (let start = 0; start < durationSeconds; start += partDurationSeconds) {
+                        // ADDED LOGGING HERE:
+                        log(`Loop start: start=${start}, firstPartTime=${firstPartTime}`);
 
-                    // Adjust subtitle indices to be continuous
-                    const lines = partContent.split("\n");
-                    let adjustedContent = "";
-                    let currentIndex = null;
-                    for (const line of lines) {
-                        if (/^\d+$/.test(line.trim())) {
-                            currentIndex = parseInt(line) + indexOffset;
-                            adjustedContent += `${currentIndex}\n`;
-                        } else {
-                            adjustedContent += `${line}\n`;
+                        const startTime = secondsToTime(start);
+                        const endTime = secondsToTime(Math.min(start + partDurationSeconds, durationSeconds));
+                        const partApiKey = getNextApiKey();
+                        if (!partApiKey) throw new Error("No valid API keys provided.");
+
+                        // Skip the first part as it was already processed for time estimation
+                        if (start === 0 && firstPartTime > 0) {
+                            indexOffset = (firstPartContent.split("\n").filter(line => /^\d+$/.test(line)).pop() || 0) ; // Try to get last index from first part content, default to 0 if none found
+                            if (indexOffset) indexOffset = parseInt(indexOffset); else indexOffset = 0; // Ensure indexOffset is a number
+
+                            if (start >= durationSeconds) break; // Check if done
+                            log("Skipped processing for part: 00:00:00,000 because it was used for estimation."); // Added log for skip
+
+                            fullContent += firstPartContent + "\n\n"; // **APPEND firstPartContent HERE**
+
+
+                        } else { // ADDED else block to process parts when not skipped
+                            log(`Processing subtitles for part: ${startTime} to ${endTime}`);
+                            let partContent = await generateContent(partApiKey, model, prompt, mimeType, videoUri, startTime, endTime);
+
+                            // Adjust subtitle indices to be continuous
+                            const lines = partContent.split("\n");
+                            let adjustedContent = "";
+                            let currentIndex = null;
+                            for (const line of lines) {
+                                if (/^\d+$/.test(line.trim())) {
+                                    currentIndex = parseInt(line) + indexOffset;
+                                    adjustedContent += `${currentIndex}\n`;
+                                } else {
+                                    adjustedContent += `${line}\n`;
+                                }
+                            }
+                            fullContent += adjustedContent + "\n";
+                            indexOffset = currentIndex || indexOffset; // Update offset based on last index
                         }
                     }
-                    fullContent += adjustedContent + "\n";
-                    indexOffset = currentIndex || indexOffset; // Update offset based on last index
+
+                    estimatedTimeElement.style.display = 'none'; // Hide estimated time after processing
+                    return fullContent.trim(); // Return successful content and exit retry loop
+                } catch (error) {
+                    lastError = error;
+                    log(`processSubtitlesInParts failed. Attempt ${retries + 1} error: ${error.message}`);
+                    retries++;
+                    if (retries <= maxRetries) {
+                        log(`Waiting 60 seconds before retrying processSubtitlesInParts...`);
+                        await new Promise(resolve => setTimeout(resolve, 60000)); // Wait 60 seconds before retry
+                    } else {
+                        log(`All ${maxRetries + 1} attempts to process subtitles parts failed.`);
+                        throw lastError; // Re-throw the last error to be caught by processVideo
+                    }
                 }
             }
-
-            estimatedTimeElement.style.display = 'none'; // Hide estimated time after processing
-
-            return fullContent.trim();
+             throw lastError || new Error("processSubtitlesInParts failed after multiple retries."); // Should not reach here, but for safety
         }
 
         // Copy output to clipboard
