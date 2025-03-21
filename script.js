@@ -633,23 +633,7 @@ const estimatedTimeValueElement = document.getElementById('estimatedTimeValue');
             } catch (error) {
                 log(`Error: ${error.message}`);
             }
-                function copyWalletAddress() {
-    const walletAddress = 'UQBNM8_syproehAkD4Yc3sLZYmw0XWsliWRgIPwlym4LlyoE';
-    
-    // روش مدرن با Clipboard API
-    if(navigator.clipboard) {
-        navigator.clipboard.writeText(walletAddress)
-            .then(() => {
-                showCustomAlert('آدرس با موفقیت کپی شد!', 'success');
-            })
-            .catch((err) => {
-                console.error('خطای Clipboard API:', err);
-                useOldCopyMethod(walletAddress); // فراخوانی روش جایگزین
-            });
-    } else {
-        useOldCopyMethod(walletAddress); // برای مرورگرهای قدیمی
-    }
-}
+
 
 // روش جایگزین برای همه مرورگرها
 function useOldCopyMethod(text) {
@@ -690,5 +674,35 @@ function showCustomAlert(message, type) {
     setTimeout(() => {
         alertBox.remove();
     }, 3000);
+}
+                function copyWallet() {
+    const walletAddress = "UQBNM8_syproehAkD4Yc3sLZYmw0XWsliWRgIPwlym4LlyoE"; // آدرس خود را اینجا قرار دهید
+    
+    // ایجاد عنصر موقت
+    const tempElement = document.createElement('textarea');
+    tempElement.value = walletAddress;
+    document.body.appendChild(tempElement);
+    
+    try {
+        // کپی متن
+        tempElement.select();
+        document.execCommand('copy');
+        
+        // نمایش پیام موفقیت
+        const successMsg = document.createElement('div');
+        successMsg.className = 'copy-success';
+        successMsg.textContent = 'Copied!';
+        document.querySelector('.wallet-box').appendChild(successMsg);
+        
+        // حذف خودکار پیام
+        setTimeout(() => {
+            successMsg.remove();
+        }, 1500);
+        
+    } catch(err) {
+        alert('خطا در کپی! لطفا دستی کپی کنید: ' + walletAddress);
+    } finally {
+        document.body.removeChild(tempElement);
+    }
 }
         }
