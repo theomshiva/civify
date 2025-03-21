@@ -387,77 +387,70 @@ body {
         margin-left: 0; /* Remove left margin */
         margin-bottom: 5px; /* Add bottom margin for stacked buttons */
     }
-    .donate-section {
-    margin: 2rem auto;
-    max-width: 600px;
-    padding: 1rem;
-    text-align: center;
+/* استایل بخش حمایت مالی */
+.donate-section {
+    margin: 25px 0;
+    padding: 20px;
+    border-radius: 12px;
+    background: rgba(255, 165, 0, 0.05);
+}
+
+.wallet-box {
+    background: rgba(255, 165, 0, 0.1);
+    border: 1px solid #FFA500;
+    border-radius: 8px;
+    padding: 15px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+    position: relative;
 }
 
 .wallet-address {
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 12px;
-    padding: 1rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.wallet-address:hover {
-    background: rgba(255, 255, 255, 0.15);
-    transform: translateY(-2px);
-}
-
-.wallet-text {
+    color: #FFA500 !important;
     font-family: 'Roboto Mono', monospace;
-    font-size: 0.9rem;
+    font-size: 0.9em;
+    font-weight: 500;
     word-break: break-all;
 }
 
 .copy-icon {
-    font-size: 1rem;
-    opacity: 0.8;
+    color: #FFA500 !important;
+    font-size: 1.1em;
+    flex-shrink: 0;
 }
 
-/* For dark theme */
-.dark-theme .wallet-address {
-    background: rgba(0, 0, 0, 0.2);
-    border-color: rgba(255, 255, 255, 0.1);
-}
-    .wallet-address {
-    user-select: none; /* غیرفعال کردن انتخاب متن */
-    cursor: pointer;
-    /* بقیه استایلهای قبلی... */
+/* افکت‌های تعاملی */
+.wallet-box:hover {
+    background: rgba(255, 165, 0, 0.15);
+    transform: translateY(-2px);
 }
 
-@keyframes slideIn {
-    from { transform: translateX(100%); }
-    to { transform: translateX(0); }
-}
-    /* تغییر رنگ متن آدرس */
-.wallet-text {
-    color: #FFA500; /* کد رنگ نارنجی */
-    font-weight: 500;
+.wallet-box:active {
+    transform: scale(0.98);
 }
 
-/* تغییر رنگ در تم تاریک */
-.dark-theme .wallet-text {
-    color: #FFB74D;
+/* پیام کپی موفق */
+.copy-success {
+    position: absolute;
+    top: -35px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #FFA500;
+    color: white;
+    padding: 8px 20px;
+    border-radius: 25px;
+    font-size: 0.85em;
+    opacity: 0;
+    animation: copyAlert 1.5s ease;
 }
 
-/* تغییر رنگ آیکون کپی */
-.copy-icon {
-    color: #FFA500;
-}
-
-/* افکت هنگام هاور */
-.wallet-address:hover .copy-icon {
-    color: #FF8C00;
+@keyframes copyAlert {
+    0% { opacity: 0; top: -20px; }
+    20% { opacity: 1; top: -35px; }
+    80% { opacity: 1; top: -35px; }
+    100% { opacity: 0; top: -50px; }
 }
 }
