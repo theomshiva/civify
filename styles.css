@@ -387,13 +387,17 @@ body {
         margin-left: 0; /* Remove left margin */
         margin-bottom: 5px; /* Add bottom margin for stacked buttons */
     }
-    /* استایل بخش حمایت مالی */
+    /* استایل بخش حمایت مالی - اصلاح شده */
 .donation-section {
     margin-top: 30px;
     padding: 20px;
     border-radius: 8px;
     background-color: #f8f9fa;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    box-sizing: border-box;
+    max-width: 100%;
+    overflow: hidden;
 }
 
 .dark-theme .donation-section {
@@ -405,6 +409,7 @@ body {
     font-size: 1.2rem;
     margin-bottom: 10px;
     color: #333;
+    text-align: center;
 }
 
 .dark-theme .donation-title {
@@ -414,18 +419,22 @@ body {
 .donation-text {
     margin-bottom: 15px;
     font-size: 0.95rem;
+    text-align: center;
 }
 
 .wallet-addresses {
     display: flex;
     flex-direction: column;
     gap: 10px;
+    width: 100%;
+    max-width: 100%;
 }
 
 .wallet-item {
     display: flex;
     flex-direction: column;
     gap: 5px;
+    width: 100%;
 }
 
 .wallet-label {
@@ -441,6 +450,9 @@ body {
     word-break: break-all;
     cursor: pointer;
     transition: background-color 0.2s;
+    width: 100%;
+    box-sizing: border-box;
+    overflow-wrap: break-word;
 }
 
 .dark-theme .wallet-address {
@@ -453,5 +465,21 @@ body {
 
 .dark-theme .wallet-address:hover {
     background-color: #444444;
+}
+
+/* اضافه کردن استایل‌های پاسخگو برای اطمینان از نمایش عمودی */
+@media (max-width: 768px) {
+    .app-container {
+        width: 100%;
+        padding: 10px;
+    }
+    
+    .donation-section {
+        padding: 15px;
+    }
+    
+    .wallet-address {
+        font-size: 0.8rem;
+    }
 }
 }
