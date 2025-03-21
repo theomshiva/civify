@@ -107,7 +107,13 @@
                     <div class="output-header">
                         <button id="copyOutputButton" class="action-button copy-button" onclick="copyOutputToClipboard()"><i class="fa fa-copy"></i> Copy</button>
                         <button id="downloadOutputButton" class="action-button download-button" onclick="downloadOutputAsSRT()" style="display:none;"><i class="fa fa-download"></i> Download SRT</button>
-                                                <p class="duration-warning" style="color: orange; font-size: 0.9em; margin-top: 5px;" id="aiDurationWarning"><b>Warning: AI duration detection may be inaccurate.</b> Please verify and consider manual input if needed.</p>
+
+                    </div>
+                    <div id="output" class="output-box"></div>
+                </div>
+            </section>
+
+            <p class="duration-warning" style="color: orange; font-size: 0.9em; margin-top: 5px;" id="aiDurationWarning"><b>Warning: AI duration detection may be inaccurate.</b> Please verify and consider manual input if needed.</p>
                 </div>
             </section>
 
@@ -133,10 +139,6 @@
     <script src="script.js"></script>
 </body>
 </html>
-                    </div>
-                    <div id="output" class="output-box"></div>
-                </div>
-            </section>
         </main>
 
         <footer class="app-footer">
