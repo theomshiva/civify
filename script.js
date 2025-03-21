@@ -634,11 +634,61 @@ const estimatedTimeValueElement = document.getElementById('estimatedTimeValue');
                 log(`Error: ${error.message}`);
             }
                 function copyWalletAddress() {
-    const walletAddress = 'UQBNM8_syproehAkD4Yc3sLZYmw0XWsliWRgIPwlym4LlyoE';
-    navigator.clipboard.writeText(walletAddress).then(() => {
-        alert('Wallet address copied to clipboard!');
-    }).catch(err => {
-        console.error('Failed to copy address:', err);
-    });
+    const walletAddress = 'آدرس_واقعی_شما_اینجا';
+    
+    // روش مدرن با Clipboard API
+    if(navigator.clipboard) {
+        navigator.clipboard.writeText(walletAddress)
+            .then(() => {
+                showCustomAlert('آدرس با موفقیت کپی شد!', 'success');
+            })
+            .catch((err) => {
+                console.error('خطای Clipboard API:', err);
+                useOldCopyMethod(walletAddress); // فراخوانی روش جایگزین
+            });
+    } else {
+        useOldCopyMethod(walletAddress); // برای مرورگرهای قدیمی
+    }
+}
+
+// روش جایگزین برای همه مرورگرها
+function useOldCopyMethod(text) {
+    try {
+        const tempInput = document.createElement('input');
+        tempInput.style.position = 'fixed';
+        tempInput.style.opacity = 0;
+        tempInput.value = text;
+        document.body.appendChild(tempInput);
+        tempInput.select();
+        document.execCommand('copy');
+        document.body.removeChild(tempInput);
+        showCustomAlert('آدرس کپی شد!', 'success');
+    } catch (err) {
+        console.error('خطای روش قدیمی:', err);
+        showCustomAlert('خطا در کپی! لطفا دستی کپی کنید', 'error');
+    }
+}
+
+// نمایش پیام زیبا
+function showCustomAlert(message, type) {
+    const alertBox = document.createElement('div');
+    alertBox.style = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 15px 25px;
+        background: ${type === 'success' ? '#4CAF50' : '#f44336'};
+        color: white;
+        border-radius: 5px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        z-index: 1000;
+        animation: slideIn 0.5s ease-out;
+    `;
+    alertBox.textContent = message;
+    document.body.appendChild(alertBox);
+
+    setTimeout(() => {
+        alertBox.remove();
+    }, 3000);
 }
         }
