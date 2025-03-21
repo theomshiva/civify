@@ -633,4 +633,12 @@ const estimatedTimeValueElement = document.getElementById('estimatedTimeValue');
             } catch (error) {
                 log(`Error: ${error.message}`);
             }
+                function copyWalletAddress() {
+    const walletAddress = 'UQBNM8_syproehAkD4Yc3sLZYmw0XWsliWRgIPwlym4LlyoE';
+    navigator.clipboard.writeText(walletAddress).then(() => {
+        alert('Wallet address copied to clipboard!');
+    }).catch(err => {
+        console.error('Failed to copy address:', err);
+    });
+}
         }
