@@ -387,4 +387,71 @@ body {
         margin-left: 0; /* Remove left margin */
         margin-bottom: 5px; /* Add bottom margin for stacked buttons */
     }
+    /* استایل بخش حمایت مالی */
+.donation-section {
+    margin-top: 30px;
+    padding: 20px;
+    border-radius: 8px;
+    background-color: #f8f9fa;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.dark-theme .donation-section {
+    background-color: #2a2a2a;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.donation-title {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.dark-theme .donation-title {
+    color: #f0f0f0;
+}
+
+.donation-text {
+    margin-bottom: 15px;
+    font-size: 0.95rem;
+}
+
+.wallet-addresses {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.wallet-item {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.wallet-label {
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.wallet-address {
+    padding: 8px;
+    background-color: #e9ecef;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    word-break: break-all;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.dark-theme .wallet-address {
+    background-color: #3a3a3a;
+}
+
+.wallet-address:hover {
+    background-color: #dee2e6;
+}
+
+.dark-theme .wallet-address:hover {
+    background-color: #444444;
+}
 }
