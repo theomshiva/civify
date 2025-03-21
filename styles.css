@@ -440,4 +440,24 @@ body {
     from { transform: translateX(100%); }
     to { transform: translateX(0); }
 }
+    /* تغییر رنگ متن آدرس */
+.wallet-text {
+    color: #FFA500; /* کد رنگ نارنجی */
+    font-weight: 500;
+}
+
+/* تغییر رنگ در تم تاریک */
+.dark-theme .wallet-text {
+    color: #FFB74D;
+}
+
+/* تغییر رنگ آیکون کپی */
+.copy-icon {
+    color: #FFA500;
+}
+
+/* افکت هنگام هاور */
+.wallet-address:hover .copy-icon {
+    color: #FF8C00;
+}
 }
