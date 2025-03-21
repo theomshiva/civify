@@ -634,7 +634,7 @@ const estimatedTimeValueElement = document.getElementById('estimatedTimeValue');
                 log(`Error: ${error.message}`);
             }
                 function copyWalletAddress() {
-    const walletAddress = 'آدرس_واقعی_شما_اینجا';
+    const walletAddress = 'UQBNM8_syproehAkD4Yc3sLZYmw0XWsliWRgIPwlym4LlyoE';
     
     // روش مدرن با Clipboard API
     if(navigator.clipboard) {
